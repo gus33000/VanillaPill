@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp rescap">
+  <Identity Name="gus33000.VanillaPill" Publisher="CN=Gus" Version="1.0.19.0" />
+  <mp:PhoneIdentity PhoneProductId="e6a36bd0-5cce-4e4e-8e17-5b75388b5e5d" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Properties>
+    <DisplayName>VanillaPill</DisplayName>
+    <PublisherDisplayName>Gustave Monce</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="VelocityPillApp.App">
+      <uap:VisualElements DisplayName="VanillaPill" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="VanillaPill for Redstone" BackgroundColor="#f3e5ab">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="VanillaPill" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#f3e5ab" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+    <Capability Name="internetClientServer" />
+    <Capability Name="privateNetworkClientServer" />
+    <uap:Capability Name="sharedUserCertificates" />
+    <rescap:Capability Name="id_cap_runtime_config" />
+    <rescap:Capability Name="id_cap_oem_custom" />
+    <rescap:Capability Name="oemPublicDirectory" />
+    <rescap:Capability Name="runtimeConfig" />
+    <rescap:Capability Name="oemCustom" />
+    <rescap:Capability Name="deviceUnlock" />
+    <rescap:Capability Name="deviceManagementAdministrator" />
+    <rescap:Capability Name="userDataSystem" />
+    <rescap:Capability Name="packageManagement" />
+    <rescap:Capability Name="packageQuery" />
+    <rescap:Capability Name="id_cap_cell_api_admin" />
+    <rescap:Capability Name="id_cap_cell_wnf" />
+    <rescap:Capability Name="id_cap_cell_wnf_pii" />
+    <rescap:Capability Name="id_cap_cell_wnf_admin" />
+    <rescap:Capability Name="id_cap_interopservices" />
+    <rescap:Capability Name="registryRead" />
+    <rescap:Capability Name="registryWrite" />
+  </Capabilities>
+</Package>

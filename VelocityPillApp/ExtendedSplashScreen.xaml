@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="VelocityPillApp.ExtendedSplashScreen"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:VelocityPillApp"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#f3e5ab">
+        <Canvas x:Name="LoadingPanel">
+            <Image x:Name="extendedSplashImage" Source="ms-appx:///Assets/SplashScreen.png" HorizontalAlignment="Center" />
+            <ProgressRing
+                x:Name="splashProgressRing"
+                Width="45"
+                Height="45"
+                HorizontalAlignment="Center"
+                Foreground="White"
+                IsActive="True"/>
+
+            <TextBlock
+                x:Name="Desc"
+                HorizontalAlignment="Stretch"
+                TextAlignment="Center"
+                Style="{StaticResource TitleTextBlockStyle}" />
+        </Canvas>
+    </Grid>
+</Page>
