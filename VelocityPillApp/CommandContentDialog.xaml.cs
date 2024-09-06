@@ -8,7 +8,7 @@ namespace VelocityPillApp
     {
         public CommandContentDialog(string cmd)
         {
-            this.InitializeComponent();
+            InitializeComponent();
             CommandTextBox.IsReadOnly = false;
             CommandTextBox.Document.SetText(Windows.UI.Text.TextSetOptions.None, cmd);
             CommandTextBox.IsReadOnly = true;

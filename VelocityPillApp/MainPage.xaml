@@ -5,8 +5,7 @@
     xmlns:local="using:VelocityPillApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
+    Background="{ThemeResource SystemControlAcrylicWindowBrush}"
     mc:Ignorable="d">
 
 
@@ -385,7 +384,7 @@
 
 
     <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,32,0,0">
-        <Rectangle x:Name="ChromeTop" Margin="0,-32,0,0" VerticalAlignment="Top" Height="96" Fill="{ThemeResource SystemChromeMediumColor}"/>
+        <Rectangle x:Name="ChromeTop" Margin="0,-32,0,0" VerticalAlignment="Top" Height="96" Fill="{ThemeResource SystemControlChromeMediumAcrylicWindowMediumBrush}"/>
 
         <TextBlock Text="VanillaPill" FontSize="12" Margin="12,-22,0,0"/>
 

@@ -1,12 +1,12 @@
 ﻿// Copyright 2015-2021 (c) Interop Tools Development Team
 // This file is licensed to you under the MIT license.
 
+using RegistryRT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
-using RegistryRT;
 
 namespace RegistryHelper
 {
@@ -42,7 +42,10 @@ namespace RegistryHelper
 
         private readonly Registry helper = new();
 
-        public bool IsSupported() => true;
+        public bool IsSupported()
+        {
+            return true;
+        }
 
         public REG_STATUS RegAddKey(REG_HIVES hive, string key)
         {
@@ -60,12 +63,9 @@ namespace RegistryHelper
         {
             try
             {
-                if (recursive)
-                {
-                    return helper.DeleteKeysRecursive(_hives[hive], key) ? REG_STATUS.SUCCESS : REG_STATUS.FAILED;
-                }
-
-                return helper.DeleteKey(_hives[hive], key) ? REG_STATUS.SUCCESS : REG_STATUS.FAILED;
+                return recursive
+                    ? helper.DeleteKeysRecursive(_hives[hive], key) ? REG_STATUS.SUCCESS : REG_STATUS.FAILED
+                    : helper.DeleteKey(_hives[hive], key) ? REG_STATUS.SUCCESS : REG_STATUS.FAILED;
             }
             catch
             {
@@ -106,7 +106,6 @@ namespace RegistryHelper
             {
                 case REG_VALUE_TYPE.REG_DWORD:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryDword(hive, key, regvalue, out uint datatmp2);
 
@@ -121,7 +120,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_QWORD:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryQword(hive, key, regvalue, out ulong datatmp2);
 
@@ -136,7 +134,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_MULTI_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryMultiString(hive, key, regvalue, out string[] datatmp2);
 
@@ -151,7 +148,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryString(hive, key, regvalue, out string datatmp2);
 
@@ -166,7 +162,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_EXPAND_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryVariableString(hive, key, regvalue, out string datatmp2);
 
@@ -239,7 +234,7 @@ namespace RegistryHelper
             if (result == REG_STATUS.SUCCESS)
             {
                 outvaltype = valtypetmp;
-                data = Convert.RegBufferToString((uint)valtypetmp, datatmp);
+                data = Convert.RegBufferToString(valtypetmp, datatmp);
                 return result;
             }
 
@@ -249,7 +244,6 @@ namespace RegistryHelper
             {
                 case (uint)REG_VALUE_TYPE.REG_DWORD:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryDword(hive, key, regvalue, out uint datatmp2);
 
@@ -264,7 +258,6 @@ namespace RegistryHelper
                     }
                 case (uint)REG_VALUE_TYPE.REG_QWORD:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryQword(hive, key, regvalue, out ulong datatmp2);
 
@@ -279,7 +272,6 @@ namespace RegistryHelper
                     }
                 case (uint)REG_VALUE_TYPE.REG_MULTI_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryMultiString(hive, key, regvalue, out string[] datatmp2);
 
@@ -294,7 +286,6 @@ namespace RegistryHelper
                     }
                 case (uint)REG_VALUE_TYPE.REG_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryString(hive, key, regvalue, out string datatmp2);
 
@@ -309,7 +300,6 @@ namespace RegistryHelper
                     }
                 case (uint)REG_VALUE_TYPE.REG_EXPAND_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryVariableString(hive, key, regvalue, out string datatmp2);
 
@@ -373,21 +363,27 @@ namespace RegistryHelper
 
         public REG_STATUS RegEnumKey(REG_HIVES? hive, string key, out IReadOnlyList<REG_ITEM> items)
         {
-            List<REG_ITEM> list = new();
+            List<REG_ITEM> list = [];
 
             if (hive == null)
             {
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_CLASSES_ROOT (HKCR)", Hive = REG_HIVES.HKEY_CLASSES_ROOT, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CLASSES_ROOT (HKCR)",
+                    Hive = REG_HIVES.HKEY_CLASSES_ROOT,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_CURRENT_CONFIG (HKCC)", Hive = REG_HIVES.HKEY_CURRENT_CONFIG, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CURRENT_CONFIG (HKCC)",
+                    Hive = REG_HIVES.HKEY_CURRENT_CONFIG,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_CURRENT_USER (HKCU)", Hive = REG_HIVES.HKEY_CURRENT_USER, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CURRENT_USER (HKCU)",
+                    Hive = REG_HIVES.HKEY_CURRENT_USER,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
@@ -397,11 +393,15 @@ namespace RegistryHelper
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_DYN_DATA (HKDD)", Hive = REG_HIVES.HKEY_DYN_DATA, Type = REG_TYPE.HIVE
+                    Name = "HKEY_DYN_DATA (HKDD)",
+                    Hive = REG_HIVES.HKEY_DYN_DATA,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_LOCAL_MACHINE (HKLM)", Hive = REG_HIVES.HKEY_LOCAL_MACHINE, Type = REG_TYPE.HIVE
+                    Name = "HKEY_LOCAL_MACHINE (HKLM)",
+                    Hive = REG_HIVES.HKEY_LOCAL_MACHINE,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
@@ -409,7 +409,7 @@ namespace RegistryHelper
                     Hive = REG_HIVES.HKEY_PERFORMANCE_DATA,
                     Type = REG_TYPE.HIVE
                 });
-                list.Add(new REG_ITEM {Name = "HKEY_USERS (HKU)", Hive = REG_HIVES.HKEY_USERS, Type = REG_TYPE.HIVE});
+                list.Add(new REG_ITEM { Name = "HKEY_USERS (HKU)", Hive = REG_HIVES.HKEY_USERS, Type = REG_TYPE.HIVE });
 
                 items = list;
                 return REG_STATUS.SUCCESS;
@@ -424,7 +424,7 @@ namespace RegistryHelper
                 {
                     foreach (string subkey in subkeys)
                     {
-                        list.Add(new REG_ITEM {Name = subkey, Hive = (REG_HIVES)hive, Key = key, Type = REG_TYPE.KEY});
+                        list.Add(new REG_ITEM { Name = subkey, Hive = (REG_HIVES)hive, Key = key, Type = REG_TYPE.KEY });
                     }
                 }
 
@@ -436,7 +436,7 @@ namespace RegistryHelper
                         string data = "";
                         try
                         {
-                            RegQueryValue((REG_HIVES)hive, key, subval, REG_VALUE_TYPE.REG_NONE, out valtype, out data);
+                            _ = RegQueryValue((REG_HIVES)hive, key, subval, REG_VALUE_TYPE.REG_NONE, out valtype, out data);
                         }
                         catch
                         {
@@ -464,27 +464,33 @@ namespace RegistryHelper
             {
             }
 
-            items = new List<REG_ITEM>();
+            items = [];
             return REG_STATUS.FAILED;
         }
 
         public REG_STATUS RegEnumKey(REG_HIVES? hive, string key, out IReadOnlyList<REG_ITEM_CUSTOM> items)
         {
-            List<REG_ITEM_CUSTOM> list = new();
+            List<REG_ITEM_CUSTOM> list = [];
 
             if (hive == null)
             {
                 list.Add(new REG_ITEM_CUSTOM
                 {
-                    Name = "HKEY_CLASSES_ROOT (HKCR)", Hive = REG_HIVES.HKEY_CLASSES_ROOT, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CLASSES_ROOT (HKCR)",
+                    Hive = REG_HIVES.HKEY_CLASSES_ROOT,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
-                    Name = "HKEY_CURRENT_CONFIG (HKCC)", Hive = REG_HIVES.HKEY_CURRENT_CONFIG, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CURRENT_CONFIG (HKCC)",
+                    Hive = REG_HIVES.HKEY_CURRENT_CONFIG,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
-                    Name = "HKEY_CURRENT_USER (HKCU)", Hive = REG_HIVES.HKEY_CURRENT_USER, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CURRENT_USER (HKCU)",
+                    Hive = REG_HIVES.HKEY_CURRENT_USER,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
@@ -494,11 +500,15 @@ namespace RegistryHelper
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
-                    Name = "HKEY_DYN_DATA (HKDD)", Hive = REG_HIVES.HKEY_DYN_DATA, Type = REG_TYPE.HIVE
+                    Name = "HKEY_DYN_DATA (HKDD)",
+                    Hive = REG_HIVES.HKEY_DYN_DATA,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
-                    Name = "HKEY_LOCAL_MACHINE (HKLM)", Hive = REG_HIVES.HKEY_LOCAL_MACHINE, Type = REG_TYPE.HIVE
+                    Name = "HKEY_LOCAL_MACHINE (HKLM)",
+                    Hive = REG_HIVES.HKEY_LOCAL_MACHINE,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
@@ -508,7 +518,9 @@ namespace RegistryHelper
                 });
                 list.Add(new REG_ITEM_CUSTOM
                 {
-                    Name = "HKEY_USERS (HKU)", Hive = REG_HIVES.HKEY_USERS, Type = REG_TYPE.HIVE
+                    Name = "HKEY_USERS (HKU)",
+                    Hive = REG_HIVES.HKEY_USERS,
+                    Type = REG_TYPE.HIVE
                 });
 
                 items = list;
@@ -526,7 +538,10 @@ namespace RegistryHelper
                     {
                         list.Add(new REG_ITEM_CUSTOM
                         {
-                            Name = subkey, Hive = (REG_HIVES)hive, Key = key, Type = REG_TYPE.KEY
+                            Name = subkey,
+                            Hive = (REG_HIVES)hive,
+                            Key = key,
+                            Type = REG_TYPE.KEY
                         });
                     }
                 }
@@ -539,7 +554,7 @@ namespace RegistryHelper
                         string data = "";
                         try
                         {
-                            RegQueryValue((REG_HIVES)hive, key, subval, 0, out valtype, out data);
+                            _ = RegQueryValue((REG_HIVES)hive, key, subval, 0, out valtype, out data);
                         }
                         catch
                         {
@@ -567,7 +582,7 @@ namespace RegistryHelper
             {
             }
 
-            items = new List<REG_ITEM_CUSTOM>();
+            items = [];
             return REG_STATUS.FAILED;
         }
 

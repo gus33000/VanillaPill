@@ -12,7 +12,5 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
-    <Grid>
-        <TextBox x:Name="FeatureIDBox" PlaceholderText="Feature ID (ex: 0xAABBCCDD)" />
-    </Grid>
+    <TextBox x:Name="FeatureIDBox" PlaceholderText="Feature ID (ex: 0xAABBCCDD)" />
 </ContentDialog>

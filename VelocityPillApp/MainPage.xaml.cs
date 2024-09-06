@@ -25,10 +25,10 @@ namespace VelocityPillApp
 
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             //if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent("Windows.UI.Xaml.FrameworkElement", "AllowFocusOnInteraction"))
-                //AddFeatureButton.AllowFocusOnInteraction = true;
+            //AddFeatureButton.AllowFocusOnInteraction = true;
 
             dtSmall = (DataTemplate)Resources["dtSmall"];
             dtEnlarged = (DataTemplate)Resources["dtEnlarged"];
@@ -79,25 +79,9 @@ namespace VelocityPillApp
         private async void CurrentFeaturesList_ItemClick(object sender, ItemClickEventArgs e)
         {
             JustClicked = true;
-            ListView lv = (sender as ListView);
+            ListView lv = sender as ListView;
 
-            if (lv.SelectedItem == null)
-            {
-                lv.SelectedItem = e.ClickedItem;
-            }
-
-            else
-            {
-                if (lv.SelectedItem.Equals(e.ClickedItem))
-                {
-                    lv.SelectedItem = null;
-                }
-
-                else
-                {
-                    lv.SelectedItem = e.ClickedItem;
-                }
-            }
+            lv.SelectedItem = lv.SelectedItem == null ? e.ClickedItem : lv.SelectedItem.Equals(e.ClickedItem) ? null : e.ClickedItem;
             await Task.Delay(400);
             JustClicked = false;
         }
@@ -156,7 +140,11 @@ namespace VelocityPillApp
         {
             try
             {
-                if (JustClicked) return;
+                if (JustClicked)
+                {
+                    return;
+                }
+
                 VelocityHelper.WNFState state = (sender as ComboBox).DataContext as VelocityHelper.WNFState;
 
                 App.helper.SetFeatureState(state);
@@ -218,13 +206,13 @@ namespace VelocityPillApp
                 //var ret = new VelocityPillRT.VelocityPill().GetFeatureState(App.featureStoreName, out result);
 
                 RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
 
                 string binstr = data.Substring(8);
 
 
                 string s = Regex.Replace(binstr, ".{2}", "$0-").TrimEnd('-');
-                String[] tempAry = s.Split('-');
+                string[] tempAry = s.Split('-');
                 byte[] result = new byte[tempAry.Length];
                 for (int i = 0; i < tempAry.Length; i++)
                 {
@@ -246,7 +234,7 @@ namespace VelocityPillApp
             uint b3 = (value >> 16) & 0xff;
             uint b4 = (value >> 24) & 0xff;
 
-            return b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0;
+            return (b1 << 24) | (b2 << 16) | (b3 << 8) | (b4 << 0);
         }
 
         private void WriteButton_Click(object sender, RoutedEventArgs e)
@@ -254,7 +242,7 @@ namespace VelocityPillApp
             try
             {
                 string s = Regex.Replace(DumpTextBox.Text, ".{2}", "$0-").TrimEnd('-');
-                String[] tempAry = s.Split('-');
+                string[] tempAry = s.Split('-');
                 byte[] buffer = new byte[tempAry.Length];
                 for (int i = 0; i < tempAry.Length; i++)
                 {
@@ -267,12 +255,12 @@ namespace VelocityPillApp
                 if (retc != 0)
                 {
                     RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                    reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                    _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
                     string countstr = data.Substring(0, 8);
                     uint count = SwapEndianness(uint.Parse(countstr, System.Globalization.NumberStyles.HexNumber));
                     count++;
                     string datatowrite = BitConverter.ToString(BitConverter.GetBytes(count)).Replace("-", "") + BitConverter.ToString(result).Replace("-", "");
-                    reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
+                    _ = reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
                 }
 
                 int ret = new VelocityPillRT.VelocityPill().GetFeatureState(App.featureStoreName, out result);
@@ -283,7 +271,7 @@ namespace VelocityPillApp
 
             }
         }
-        
+
         private async void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             try

@@ -20,7 +20,7 @@ namespace RegistryHelper
                 {
                     uint val = lookup32[bytes[i]];
                     result[2 * i] = (char)val;
-                    result[2 * i + 1] = (char)(val >> 16);
+                    result[(2 * i) + 1] = (char)(val >> 16);
                 }
 
                 return new string(result);

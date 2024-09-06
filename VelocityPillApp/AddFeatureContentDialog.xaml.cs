@@ -12,18 +12,16 @@ namespace VelocityPillApp
 
         public AddFeatureContentDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         public async Task<string> DoIt()
         {
-            await ShowAsync();
-            if (addtrue)
-                return FeatureIDBox.Text;
-            return "";
+            _ = await ShowAsync();
+            return addtrue ? FeatureIDBox.Text : "";
         }
 
-    private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             addtrue = true;
         }

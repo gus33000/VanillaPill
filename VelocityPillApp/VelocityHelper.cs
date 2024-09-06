@@ -36,7 +36,10 @@ namespace VelocityPillApp
                 }
             }
 
-            public uint ID { get; internal set; }
+            public uint ID
+            {
+                get; internal set;
+            }
             public State Enabled
             {
                 get
@@ -53,25 +56,26 @@ namespace VelocityPillApp
                 }
                 set
                 {
-                    if (Enabled == value) return;
-                    if (value == State.Custom) return;
-                    if (value == State.Enabled)
+                    if (Enabled == value)
                     {
-                        WNFStateData = new byte[] { 01, 08, 00, 00, 00, 00, 00, 00 };
+                        return;
                     }
-                    else
+
+                    if (value == State.Custom)
                     {
-                        WNFStateData = new byte[] { 01, 04, 00, 00, 00, 00, 00, 00 };
+                        return;
                     }
+
+                    WNFStateData = value == State.Enabled ? (new byte[] { 01, 08, 00, 00, 00, 00, 00, 00 }) : (new byte[] { 01, 04, 00, 00, 00, 00, 00, 00 });
                 }
             }
-            public byte[] WNFStateData { get; set; }
+            public byte[] WNFStateData
+            {
+                get; set;
+            }
             public int DisplayableEnabled
             {
-                get
-                {
-                    return (int)Enabled;
-                }
+                get => (int)Enabled;
                 set
                 {
                     try
@@ -86,16 +90,13 @@ namespace VelocityPillApp
 
             public string DisplayableText
             {
-                get
-                {
-                    return BitConverter.ToString(WNFStateData).Replace("-", "");
-                }
+                get => BitConverter.ToString(WNFStateData).Replace("-", "");
                 set
                 {
                     try
                     {
                         string s = Regex.Replace(value, ".{2}", "$0-").TrimEnd('-');
-                        String[] tempAry = s.Split('-');
+                        string[] tempAry = s.Split('-');
                         byte[] buffer = new byte[tempAry.Length];
                         for (int i = 0; i < tempAry.Length; i++)
                         {
@@ -127,7 +128,7 @@ namespace VelocityPillApp
             uint b3 = (value >> 16) & 0xff;
             uint b4 = (value >> 24) & 0xff;
 
-            return b1 << 24 | b2 << 16 | b3 << 8 | b4 << 0;
+            return (b1 << 24) | (b2 << 16) | (b3 << 8) | (b4 << 0);
         }
 
         public List<WNFState> GetFeatureStates()
@@ -140,7 +141,7 @@ namespace VelocityPillApp
                 //var ret = pill.GetFeatureState(featureStoreName, out result);
 
                 RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
 
                 string binstr = data.Substring(8);
 
@@ -152,10 +153,12 @@ namespace VelocityPillApp
                 foreach (string id in idlist)
                 {
                     if (id == "")
+                    {
                         continue;
+                    }
 
                     string s = Regex.Replace(id.Substring(8, 16), ".{2}", "$0-").TrimEnd('-');
-                    String[] tempAry = s.Split('-');
+                    string[] tempAry = s.Split('-');
                     byte[] buffer = new byte[tempAry.Length];
                     for (int i = 0; i < tempAry.Length; i++)
                     {
@@ -193,7 +196,7 @@ namespace VelocityPillApp
                 if (retc != 0)
                 {
                     RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                    reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                    _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
                     string countstr = data.Substring(0, 8);
                     uint count = SwapEndianness(uint.Parse(countstr, System.Globalization.NumberStyles.HexNumber));
                     count++;
@@ -201,7 +204,9 @@ namespace VelocityPillApp
                     RegistryHelper.REG_STATUS fret = reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
 
                     if (fret != RegistryHelper.REG_STATUS.SUCCESS)
+                    {
                         ShowCommand(result);
+                    }
                 }
             }
             catch
@@ -219,21 +224,27 @@ namespace VelocityPillApp
 
 
                 RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
 
-                string binstr = data.Substring(8);
+                string binstr = "";
+                if (!string.IsNullOrEmpty(data))
+                {
+                    binstr = data.Substring(8);
+                }
 
 
                 string s = Regex.Replace(binstr, ".{2}", "$0-").TrimEnd('-');
-                String[] tempAry = s.Split('-');
+                string[] tempAry = s.Split('-');
                 byte[] result = new byte[tempAry.Length];
                 for (int i = 0; i < tempAry.Length; i++)
                 {
                     result[i] = Convert.ToByte(tempAry[i], 16);
                 }
-                
+
                 if (clean)
+                {
                     result = new byte[] { 02, 02, 16, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00 };
+                }
 
                 foreach (WNFState state in states)
                 {
@@ -255,15 +266,17 @@ namespace VelocityPillApp
                 int retc = pill.SetFeatureState(App.featureStoreName, result);
                 if (retc != 0)
                 {
-                    reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
+                    _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
                     string countstr = data.Substring(0, 8);
                     uint count2 = SwapEndianness(uint.Parse(countstr, System.Globalization.NumberStyles.HexNumber));
                     count2++;
                     string datatowrite = BitConverter.ToString(BitConverter.GetBytes(count2)).Replace("-", "") + BitConverter.ToString(result).Replace("-", "");
                     RegistryHelper.REG_STATUS fret = reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
-                
+
                     if (fret != RegistryHelper.REG_STATUS.SUCCESS)
+                    {
                         ShowCommand(result);
+                    }
                 }
             }
             catch
@@ -281,13 +294,13 @@ namespace VelocityPillApp
 
 
                 RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
 
                 string binstr = data.Substring(8);
 
 
                 string s = Regex.Replace(binstr, ".{2}", "$0-").TrimEnd('-');
-                String[] tempAry = s.Split('-');
+                string[] tempAry = s.Split('-');
                 byte[] result = new byte[tempAry.Length];
                 for (int i = 0; i < tempAry.Length; i++)
                 {
@@ -307,7 +320,7 @@ namespace VelocityPillApp
                 result = newlst.ToArray();
 
                 Debug.WriteLine(BitConverter.ToString(BitConverter.GetBytes(count)));
-                
+
                 count++;
                 result[4] = BitConverter.GetBytes(count).First();
 
@@ -316,7 +329,7 @@ namespace VelocityPillApp
                 int retc = pill.SetFeatureState(App.featureStoreName, result);
                 if (retc != 0)
                 {
-                    reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
+                    _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
                     string countstr = data.Substring(0, 8);
                     uint count2 = SwapEndianness(uint.Parse(countstr, System.Globalization.NumberStyles.HexNumber));
                     count2++;
@@ -324,7 +337,9 @@ namespace VelocityPillApp
                     RegistryHelper.REG_STATUS fret = reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
 
                     if (fret != RegistryHelper.REG_STATUS.SUCCESS)
+                    {
                         ShowCommand(result);
+                    }
                 }
             }
             catch
@@ -342,13 +357,13 @@ namespace VelocityPillApp
 
 
                 RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
 
                 string binstr = data.Substring(8);
 
 
                 string s = Regex.Replace(binstr, ".{2}", "$0-").TrimEnd('-');
-                String[] tempAry = s.Split('-');
+                string[] tempAry = s.Split('-');
                 byte[] result = new byte[tempAry.Length];
                 for (int i = 0; i < tempAry.Length; i++)
                 {
@@ -357,7 +372,7 @@ namespace VelocityPillApp
 
                 string id = BitConverter.ToString(BitConverter.GetBytes(SwapEndianness(state.ID))).Replace("-", "");
 
-                int location = BitConverter.ToString(result).Replace("-", "").IndexOf(id) / 2 + 4;
+                int location = (BitConverter.ToString(result).Replace("-", "").IndexOf(id) / 2) + 4;
 
                 int count = 0;
                 foreach (byte byteitm in state.WNFStateData)
@@ -369,7 +384,7 @@ namespace VelocityPillApp
                 int retc = pill.SetFeatureState(App.featureStoreName, result);
                 if (retc != 0)
                 {
-                    reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
+                    _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
                     string countstr = data.Substring(0, 8);
                     uint count2 = SwapEndianness(uint.Parse(countstr, System.Globalization.NumberStyles.HexNumber));
                     count2++;
@@ -377,7 +392,9 @@ namespace VelocityPillApp
                     RegistryHelper.REG_STATUS fret = reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
 
                     if (fret != RegistryHelper.REG_STATUS.SUCCESS)
+                    {
                         ShowCommand(result);
+                    }
                 }
             }
             catch
@@ -407,10 +424,11 @@ namespace VelocityPillApp
                 Windows.Storage.CachedFileManager.DeferUpdates(file);
                 // write to file
                 await Windows.Storage.FileIO.WriteBufferAsync(file, buffer.AsBuffer());
+
                 // Let Windows know that we're finished changing the file so
                 // the other app can update the remote version of the file.
                 // Completing updates may require Windows to ask for user input.
-                Windows.Storage.Provider.FileUpdateStatus status =
+                _ =
                     await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
             }
         }
@@ -418,7 +436,7 @@ namespace VelocityPillApp
         public async void ShowCommand(byte[] buffer)
         {
             string cmd = $"reg add \"HKLM\\{App.key}\" /v {App.featureStoreName} /t REG_BINARY /d 01000000{BitConverter.ToString(buffer).Replace("-", "")} /f";
-            await new CommandContentDialog(cmd).ShowAsync();
+            _ = await new CommandContentDialog(cmd).ShowAsync();
         }
 
         public void RemoveFeatureState(WNFState state)
@@ -430,12 +448,12 @@ namespace VelocityPillApp
 
 
                 RegistryHelper.CRegistryHelper reg = new RegistryHelper.CRegistryHelper();
-                reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
+                _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out RegistryHelper.REG_VALUE_TYPE datatype, out string data);
 
                 string binstr = data.Substring(8);
-                
+
                 string s = Regex.Replace(binstr, ".{2}", "$0-").TrimEnd('-');
-                String[] tempAry = s.Split('-');
+                string[] tempAry = s.Split('-');
                 byte[] result = new byte[tempAry.Length];
                 for (int i = 0; i < tempAry.Length; i++)
                 {
@@ -458,7 +476,7 @@ namespace VelocityPillApp
                 int retc = pill.SetFeatureState(App.featureStoreName, result);
                 if (retc != 0)
                 {
-                    reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
+                    _ = reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data);
                     string countstr = data.Substring(0, 8);
                     uint count2 = SwapEndianness(uint.Parse(countstr, System.Globalization.NumberStyles.HexNumber));
                     count2++;
@@ -466,7 +484,9 @@ namespace VelocityPillApp
                     RegistryHelper.REG_STATUS fret = reg.RegSetValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, App.key, App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, datatowrite);
 
                     if (fret != RegistryHelper.REG_STATUS.SUCCESS)
+                    {
                         ShowCommand(result);
+                    }
                 }
             }
             catch

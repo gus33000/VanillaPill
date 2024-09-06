@@ -9,7 +9,7 @@ namespace RegistryHelper
 {
     public sealed class CRegistryHelper
     {
-        private readonly List<IRegistryProvider> providers = new();
+        private readonly List<IRegistryProvider> providers = [];
 
         public CRegistryHelper()
         {
@@ -70,17 +70,17 @@ namespace RegistryHelper
 
             if (hadaccessdenied)
             {
-                items = new List<REG_ITEM>();
+                items = [];
                 return REG_STATUS.ACCESS_DENIED;
             }
 
             if (hadfailed)
             {
-                items = new List<REG_ITEM>();
+                items = [];
                 return REG_STATUS.FAILED;
             }
 
-            items = new List<REG_ITEM>();
+            items = [];
             return REG_STATUS.FAILED;
         }
 
@@ -117,17 +117,17 @@ namespace RegistryHelper
 
             if (hadaccessdenied)
             {
-                items = new List<REG_ITEM_CUSTOM>();
+                items = [];
                 return REG_STATUS.ACCESS_DENIED;
             }
 
             if (hadfailed)
             {
-                items = new List<REG_ITEM_CUSTOM>();
+                items = [];
                 return REG_STATUS.FAILED;
             }
 
-            items = new List<REG_ITEM_CUSTOM>();
+            items = [];
             return REG_STATUS.FAILED;
         }
 
@@ -160,17 +160,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public REG_STATUS RegDeleteKey(REG_HIVES hive, string key, bool recursive)
@@ -202,17 +192,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public REG_STATUS RegDeleteValue(REG_HIVES hive, string key, string name)
@@ -244,17 +224,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public REG_STATUS RegRenameKey(REG_HIVES hive, string key, string newname)
@@ -286,17 +256,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public REG_KEY_STATUS RegQueryKeyStatus(REG_HIVES hive, string key)
@@ -328,17 +288,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_KEY_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadunknown)
-            {
-                return REG_KEY_STATUS.UNKNOWN;
-            }
-
-            return REG_KEY_STATUS.UNKNOWN;
+            return hadaccessdenied ? REG_KEY_STATUS.ACCESS_DENIED : hadunknown ? REG_KEY_STATUS.UNKNOWN : REG_KEY_STATUS.UNKNOWN;
         }
 
         public REG_STATUS RegQueryValue(REG_HIVES hive, string key, string regvalue, REG_VALUE_TYPE valtype,
@@ -504,7 +454,7 @@ namespace RegistryHelper
                 if (result == REG_STATUS.SUCCESS)
                 {
                     outvaltype = valtypetmp;
-                    data = Convert.RegBufferToString((uint)valtypetmp, datatmp);
+                    data = Convert.RegBufferToString(valtypetmp, datatmp);
                     return result;
                 }
 
@@ -745,17 +695,7 @@ namespace RegistryHelper
                 hadfailed = true;
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         [Windows.Foundation.Metadata.DefaultOverload()]
@@ -854,17 +794,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public bool DoesFileExists(string path)
@@ -911,17 +841,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public REG_STATUS RegUnloadHive(string mountpoint, bool inUser)
@@ -953,17 +873,7 @@ namespace RegistryHelper
                 }
             }
 
-            if (hadaccessdenied)
-            {
-                return REG_STATUS.ACCESS_DENIED;
-            }
-
-            if (hadfailed)
-            {
-                return REG_STATUS.FAILED;
-            }
-
-            return REG_STATUS.FAILED;
+            return hadaccessdenied ? REG_STATUS.ACCESS_DENIED : hadfailed ? REG_STATUS.FAILED : REG_STATUS.FAILED;
         }
 
         public REG_STATUS RegQueryKeyLastModifiedTime(REG_HIVES hive, string key, out long lastmodified)

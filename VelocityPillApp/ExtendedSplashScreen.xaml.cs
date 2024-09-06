@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.System.Threading;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -28,7 +28,7 @@ namespace VelocityPillApp
         internal bool dismissed = false; // Variable to track splash screen dismissal status.
         internal Frame rootFrame;
         private readonly double ScaleFactor;
-        
+
         private void SetupTitleBar()
         {
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -36,7 +36,7 @@ namespace VelocityPillApp
                 StatusBar.GetForCurrentView().BackgroundOpacity = 0;
             }
 
-            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
+            _ = ApplicationView.GetForCurrentView().SetDesiredBoundsMode(Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow);
             ApplicationViewTitleBar titlebar = ApplicationView.GetForCurrentView().TitleBar;
             SolidColorBrush transparentColorBrush = new SolidColorBrush { Opacity = 0 };
             Windows.UI.Color transparentColor = transparentColorBrush.Color;
@@ -80,7 +80,7 @@ namespace VelocityPillApp
             if (splash != null)
             {
                 // Register an event handler to be executed when the splash screen has been dismissed.
-                splash.Dismissed += new TypedEventHandler<SplashScreen, Object>(DismissedEventHandler);
+                splash.Dismissed += new TypedEventHandler<SplashScreen, object>(DismissedEventHandler);
                 // Retrieve the window coordinates of the splash screen image.
                 splashImageRect = splash.ImageLocation;
                 PositionImage();
@@ -93,8 +93,8 @@ namespace VelocityPillApp
             // Restore the saved session state if necessary
             RestoreStateAsync(loadState);
         }
-        
-        void RestoreStateAsync(bool loadState)
+
+        private void RestoreStateAsync(bool loadState)
         {
             if (loadState)
             {
@@ -103,7 +103,7 @@ namespace VelocityPillApp
         }
 
         // Position the extended splash screen image in the same location as the system splash screen image.
-        void PositionImage()
+        private void PositionImage()
         {
             extendedSplashImage.SetValue(Canvas.LeftProperty, splashImageRect.Left);
             extendedSplashImage.SetValue(Canvas.TopProperty, splashImageRect.Top);
@@ -119,17 +119,17 @@ namespace VelocityPillApp
             }
         }
 
-        void PositionRing()
+        private void PositionRing()
         {
             splashProgressRing.SetValue(Canvas.LeftProperty, splashImageRect.X + (splashImageRect.Width * 0.5) - (splashProgressRing.Width * 0.5));
-            splashProgressRing.SetValue(Canvas.TopProperty, (splashImageRect.Y + splashImageRect.Height + splashImageRect.Height * 0.1));
+            splashProgressRing.SetValue(Canvas.TopProperty, splashImageRect.Y + splashImageRect.Height + (splashImageRect.Height * 0.1));
 
             //Desc.SetValue(Canvas.LeftProperty, splashImageRect.X + (splashImageRect.Width * 0.5) - (splashProgressRing.Width * 0.5));
             Desc.Width = LoadingPanel.ActualWidth;
-            Desc.SetValue(Canvas.TopProperty, (splashProgressRing.Height + 16 + splashImageRect.Y + splashImageRect.Height + splashImageRect.Height * 0.1));
+            Desc.SetValue(Canvas.TopProperty, splashProgressRing.Height + 16 + splashImageRect.Y + splashImageRect.Height + (splashImageRect.Height * 0.1));
         }
 
-        void ExtendedSplash_OnResize(Object sender, WindowSizeChangedEventArgs e)
+        private void ExtendedSplash_OnResize(object sender, WindowSizeChangedEventArgs e)
         {
             // Safely update the extended splash screen image coordinates. This function will be fired in response to snapping, unsnapping, rotation, etc...
             if (splash != null)
@@ -142,12 +142,13 @@ namespace VelocityPillApp
         }
 
         // Include code to be executed when the system has transitioned from the splash screen to the extended splash screen (application's first view).
-        async void DismissedEventHandler(SplashScreen sender, object e)
+        private async void DismissedEventHandler(SplashScreen sender, object e)
         {
             dismissed = true;
             // Complete app setup operations here...
             // Safely update the extended splash screen image coordinates. This function will be fired in response to snapping, unsnapping, rotation, etc...
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+            {
                 if (sender != null)
                 {
                     // Update the coordinates of the splash screen image.
@@ -156,13 +157,13 @@ namespace VelocityPillApp
                     PositionRing();
                 }
 
-                await new SelectSourceContentDialog().ShowAsync();
+                _ = await new SelectSourceContentDialog().ShowAsync();
 
                 StorageFile file = null;
 
                 try
                 {
-                    var openDialog = new Windows.Storage.Pickers.FileOpenPicker()
+                    Windows.Storage.Pickers.FileOpenPicker openDialog = new Windows.Storage.Pickers.FileOpenPicker()
                     {
                         SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary
                     };
@@ -174,7 +175,7 @@ namespace VelocityPillApp
 
                 Desc.Text = "Loading feature informations...";
 
-                ThreadPool.QueueUserWorkItem(async (_) =>
+                _ = ThreadPool.RunAsync(async (_) =>
                 {
                     if (file != null)
                     {

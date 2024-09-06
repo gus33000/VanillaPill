@@ -8,7 +8,7 @@ namespace VelocityPillApp
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    sealed partial class App : Application
+    public sealed partial class App : Application
     {
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -16,18 +16,21 @@ namespace VelocityPillApp
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
-            this.Suspending += OnSuspending;
+            InitializeComponent();
+            Suspending += OnSuspending;
         }
 
         public static string key = @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Notifications\Data";
         public const string featureStoreName = "418A073AA3BC7C75";
 
         public static List<VelocityHelper.WNFState> statelist = new List<VelocityHelper.WNFState>();
-        
+
         public static VelocityHelper helper = new VelocityHelper();
 
-        public static IList<string> Lines { get; set; }
+        public static IList<string> Lines
+        {
+            get; set;
+        }
 
         public static List<VelocityHelper.WNFState> templatelist = new List<VelocityHelper.WNFState>();
 
@@ -43,7 +46,7 @@ namespace VelocityPillApp
         {
             if (e.PreviousExecutionState != ApplicationExecutionState.Running)
             {
-                bool loadState = (e.PreviousExecutionState == ApplicationExecutionState.Terminated);
+                bool loadState = e.PreviousExecutionState == ApplicationExecutionState.Terminated;
                 ExtendedSplashScreen extendedSplash = new ExtendedSplashScreen(e.SplashScreen, loadState);
                 Window.Current.Content = extendedSplash;
             }

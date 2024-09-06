@@ -46,7 +46,10 @@ namespace RegistryHelper
         };
 #endif
 
-        public bool IsSupported() => true;
+        public bool IsSupported()
+        {
+            return true;
+        }
 
         public REG_STATUS RegDeleteKey(REG_HIVES hive, string key, bool recursive)
         {
@@ -98,7 +101,6 @@ namespace RegistryHelper
             {
                 case REG_VALUE_TYPE.REG_DWORD:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryDword(hive, key, regvalue, out uint datatmp2);
 
@@ -113,7 +115,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_QWORD:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryQword(hive, key, regvalue, out ulong datatmp2);
 
@@ -128,7 +129,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_MULTI_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryMultiString(hive, key, regvalue, out string[] datatmp2);
 
@@ -143,7 +143,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryString(hive, key, regvalue, out string datatmp2);
 
@@ -158,7 +157,6 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_EXPAND_SZ:
                     {
-                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryVariableString(hive, key, regvalue, out string datatmp2);
 
@@ -222,21 +220,27 @@ namespace RegistryHelper
 
         public REG_STATUS RegEnumKey(REG_HIVES? hive, string key, out IReadOnlyList<REG_ITEM> items)
         {
-            List<REG_ITEM> list = new();
+            List<REG_ITEM> list = [];
 
             if (hive == null)
             {
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_CLASSES_ROOT (HKCR)", Hive = REG_HIVES.HKEY_CLASSES_ROOT, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CLASSES_ROOT (HKCR)",
+                    Hive = REG_HIVES.HKEY_CLASSES_ROOT,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_CURRENT_CONFIG (HKCC)", Hive = REG_HIVES.HKEY_CURRENT_CONFIG, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CURRENT_CONFIG (HKCC)",
+                    Hive = REG_HIVES.HKEY_CURRENT_CONFIG,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_CURRENT_USER (HKCU)", Hive = REG_HIVES.HKEY_CURRENT_USER, Type = REG_TYPE.HIVE
+                    Name = "HKEY_CURRENT_USER (HKCU)",
+                    Hive = REG_HIVES.HKEY_CURRENT_USER,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
@@ -246,11 +250,15 @@ namespace RegistryHelper
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_DYN_DATA (HKDD)", Hive = REG_HIVES.HKEY_DYN_DATA, Type = REG_TYPE.HIVE
+                    Name = "HKEY_DYN_DATA (HKDD)",
+                    Hive = REG_HIVES.HKEY_DYN_DATA,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
-                    Name = "HKEY_LOCAL_MACHINE (HKLM)", Hive = REG_HIVES.HKEY_LOCAL_MACHINE, Type = REG_TYPE.HIVE
+                    Name = "HKEY_LOCAL_MACHINE (HKLM)",
+                    Hive = REG_HIVES.HKEY_LOCAL_MACHINE,
+                    Type = REG_TYPE.HIVE
                 });
                 list.Add(new REG_ITEM
                 {
@@ -258,7 +266,7 @@ namespace RegistryHelper
                     Hive = REG_HIVES.HKEY_PERFORMANCE_DATA,
                     Type = REG_TYPE.HIVE
                 });
-                list.Add(new REG_ITEM {Name = "HKEY_USERS (HKU)", Hive = REG_HIVES.HKEY_USERS, Type = REG_TYPE.HIVE});
+                list.Add(new REG_ITEM { Name = "HKEY_USERS (HKU)", Hive = REG_HIVES.HKEY_USERS, Type = REG_TYPE.HIVE });
 
                 items = list;
                 return REG_STATUS.SUCCESS;
@@ -300,7 +308,7 @@ namespace RegistryHelper
             }
 #endif
 
-            items = new List<REG_ITEM>();
+            items = [];
             return REG_STATUS.FAILED;
         }
 
@@ -594,16 +602,25 @@ namespace RegistryHelper
         }
 
         public REG_STATUS RegSetValue(REG_HIVES hive, string key, string regvalue, uint valtype,
-            [ReadOnlyArray] byte[] data) => REG_STATUS.NOT_IMPLEMENTED;
-
-        public REG_STATUS RegEnumKey(REG_HIVES? hive, string key, out IReadOnlyList<REG_ITEM_CUSTOM> items)
+            [ReadOnlyArray] byte[] data)
         {
-            items = new List<REG_ITEM_CUSTOM>();
             return REG_STATUS.NOT_IMPLEMENTED;
         }
 
-        public REG_STATUS RegLoadHive(string FilePath, string mountpoint, bool inUser) => REG_STATUS.NOT_IMPLEMENTED;
+        public REG_STATUS RegEnumKey(REG_HIVES? hive, string key, out IReadOnlyList<REG_ITEM_CUSTOM> items)
+        {
+            items = [];
+            return REG_STATUS.NOT_IMPLEMENTED;
+        }
 
-        public REG_STATUS RegUnloadHive(string mountpoint, bool inUser) => REG_STATUS.NOT_IMPLEMENTED;
+        public REG_STATUS RegLoadHive(string FilePath, string mountpoint, bool inUser)
+        {
+            return REG_STATUS.NOT_IMPLEMENTED;
+        }
+
+        public REG_STATUS RegUnloadHive(string mountpoint, bool inUser)
+        {
+            return REG_STATUS.NOT_IMPLEMENTED;
+        }
     }
 }
