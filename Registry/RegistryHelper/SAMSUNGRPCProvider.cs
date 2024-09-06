@@ -13,9 +13,7 @@ namespace RegistryHelper
 {
     public sealed class SAMSUNGRPCProvider : IRegistryProvider
     {
-#if ARM
         private bool _initialized;
-#endif
 
         private static readonly Dictionary<REG_HIVES, uint> _srpchives = new()
         {

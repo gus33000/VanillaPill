@@ -98,6 +98,7 @@ namespace RegistryHelper
             {
                 case REG_VALUE_TYPE.REG_DWORD:
                     {
+                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryDword(hive, key, regvalue, out uint datatmp2);
 
@@ -112,6 +113,7 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_QWORD:
                     {
+                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryQword(hive, key, regvalue, out ulong datatmp2);
 
@@ -126,6 +128,7 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_MULTI_SZ:
                     {
+                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryMultiString(hive, key, regvalue, out string[] datatmp2);
 
@@ -140,6 +143,7 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_SZ:
                     {
+                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryString(hive, key, regvalue, out string datatmp2);
 
@@ -154,6 +158,7 @@ namespace RegistryHelper
                     }
                 case REG_VALUE_TYPE.REG_EXPAND_SZ:
                     {
+                        data = "";
                         outvaltype = valtype;
                         REG_STATUS result2 = RegQueryVariableString(hive, key, regvalue, out string datatmp2);
 

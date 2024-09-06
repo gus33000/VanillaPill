@@ -30,6 +30,7 @@ namespace VelocityPillApp
                     }
                 }
             }
+            ContentPanel.Children.Add(new RadioButton() { Content = "Offline", GroupName = "SelectHive", IsChecked = checkedR });
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -40,6 +41,11 @@ namespace VelocityPillApp
                 var radioBtn = (RadioButton)btn;
                 if (radioBtn.IsChecked == true)
                 {
+                    if (radioBtn.Content == "Offline")
+                    {
+                        return;
+                    }
+
                     RegistryHelper.REG_VALUE_TYPE datatype;
                     string data;
                     if (reg.RegQueryValue(RegistryHelper.REG_HIVES.HKEY_LOCAL_MACHINE, $@"{(string)radioBtn.Content}\Microsoft\Windows NT\CurrentVersion\Notifications\Data", App.featureStoreName, RegistryHelper.REG_VALUE_TYPE.REG_BINARY, out datatype, out data) == RegistryHelper.REG_STATUS.SUCCESS)

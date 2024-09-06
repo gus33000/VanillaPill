@@ -13,5 +13,6 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Registry.h" />
+    <ClInclude Include="NativeRegistry.h" />
   </ItemGroup>
 </Project>
